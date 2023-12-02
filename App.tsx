@@ -24,7 +24,7 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-
+import VersionInfo from 'react-native-version-info';
 import Config from 'react-native-config';
 
 type SectionProps = PropsWithChildren<{
@@ -79,7 +79,8 @@ function App(): JSX.Element {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <Section title={`Step One-${Config.NODE_ENV}`}>
+          <Text style={{position:'absolute',right:4,paddingTop:2,fontSize:10,color:'gray'}}>{`version: ${Config.NODE_ENV?.toLowerCase()}-${VersionInfo.appVersion}`}</Text>
+          <Section title={'Step One'}>
             Edit <Text style={styles.highlight}>App.tsx</Text> to change this
             screen and then come back to see your edits.
           </Section>
