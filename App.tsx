@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import type {PropsWithChildren} from 'react';
+import type { PropsWithChildren } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -26,12 +26,17 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 import VersionInfo from 'react-native-version-info';
 import Config from 'react-native-config';
+import Animated, {
+  LightSpeedInLeft,
+  LightSpeedInRight,
+  FadeInDown,
+} from 'react-native-reanimated';
 
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
 
-function Section({children, title}: SectionProps): JSX.Element {
+function Section({ children, title }: SectionProps): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View style={styles.sectionContainer}>
@@ -79,17 +84,25 @@ function App(): JSX.Element {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <Text style={{position:'absolute',right:4,paddingTop:2,fontSize:10,color:'gray'}}>{`version: ${Config.NODE_ENV?.toLowerCase()}-${VersionInfo.appVersion}`}</Text>
-          <Section title={'Step One'}>
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
+          <Text style={{ position: 'absolute', right: 4, paddingTop: 2, fontSize: 10, color: 'gray' }}>{`version: ${Config.NODE_ENV?.toLowerCase()}-${VersionInfo.appVersion}`}</Text>
+          <Animated.View entering={LightSpeedInLeft.duration(1000).delay(100)}>
+            <Section title={'Step One'}>
+              Edit <Text style={styles.highlight}>App.tsx</Text> to change this
+              screen and then come back to see your edits.
+            </Section>
+          </Animated.View>
+          <Animated.View entering={LightSpeedInRight.duration(1000).delay(100)}>
+
           <Section title="See Your Changes">
             <ReloadInstructions />
           </Section>
+          </Animated.View>
+          <Animated.View entering={LightSpeedInLeft.duration(1000).delay(100)}>
+
           <Section title="Debug">
             <DebugInstructions />
           </Section>
+          </Animated.View>
           <Section title="Learn More">
             Read the docs to discover what to do next:
           </Section>
