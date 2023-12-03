@@ -8,13 +8,18 @@
 import React from 'react';
 import type { PropsWithChildren } from 'react';
 import {
+  Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,
+  StyleProp,
   StyleSheet,
   Text,
+  TextStyle,
+  TouchableOpacity,
   useColorScheme,
   View,
+  ViewStyle,
 } from 'react-native';
 
 import {
@@ -31,6 +36,16 @@ import Animated, {
   LightSpeedInRight,
   FadeInDown,
 } from 'react-native-reanimated';
+import { EntypoIconButton } from './icons';
+
+const font = {
+  CascadiaCode: Platform.OS === 'ios' ? 'Cascadia Code' : 'CascadiaCode',
+  CascadiaCodeMono:
+    Platform.OS === 'ios' ? 'Cascadia Code' : 'CascadiaCodeMono',
+  SFProTextRegular:
+    Platform.OS === 'ios' ? 'SFProText-Regular' : 'SF_Pro_Text_Regular',
+  SFProTextBold: Platform.OS === 'ios' ? 'SFProText-Bold' : 'SF_Pro_Text_Bold'
+};
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -45,6 +60,7 @@ function Section({ children, title }: SectionProps): JSX.Element {
           styles.sectionTitle,
           {
             color: isDarkMode ? Colors.white : Colors.black,
+            fontFamily: font.SFProTextBold
           },
         ]}>
         {title}
@@ -54,6 +70,7 @@ function Section({ children, title }: SectionProps): JSX.Element {
           styles.sectionDescription,
           {
             color: isDarkMode ? Colors.light : Colors.dark,
+            fontFamily: font.SFProTextRegular
           },
         ]}>
         {children}
@@ -103,10 +120,39 @@ function App(): JSX.Element {
             <DebugInstructions />
           </Section>
           </Animated.View>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+          <Animated.View entering={FadeInDown.duration(500).delay(100)}
+            style={{
+              marginTop: 20,
+              marginLeft:20,
+              flexDirection: 'row',
+            }}>
+            <EntypoIconButton
+              name="menu"
+              containerStyle={{
+                padding: 10,
+                borderRadius: 24,
+                backgroundColor: 'orange',
+              }}
+            />
+            <EntypoIconButton
+              name="camera"
+              containerStyle={{
+                padding: 10,
+                borderRadius: 24,
+                backgroundColor: 'orange',
+                marginLeft: 10
+              }}
+            />
+            <EntypoIconButton
+              name="image"
+              containerStyle={{
+                padding: 10,
+                borderRadius: 24,
+                backgroundColor: 'orange',
+                marginLeft: 10
+              }}
+            />
+          </Animated.View>
         </View>
       </ScrollView>
     </SafeAreaView>
