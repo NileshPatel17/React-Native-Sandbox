@@ -1,0 +1,5 @@
+ext.getArtifactName = {
+    defaultConfig ->
+        def date = new Date().format("yyyyMMdd_HHmmss")
+        return "v_" + defaultConfig.versionName + "(" + defaultConfig.versionCode + ")_" + date
+}

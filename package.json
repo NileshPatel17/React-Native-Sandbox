@@ -11,10 +11,14 @@
     "lint": "eslint .",
     "start": "react-native start",
     "clean": "cd android && ./gradlew clean && cd ..",
+    "bundle": "npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle",
+    "bundle:release": "cd android && ./gradlew bundleRelease && cd ..",
     "release:dev": "cd android && ENVFILE=.env.dev ./gradlew assembleRelease && cd ..",
     "release:uat": "cd android && ENVFILE=.env.uat ./gradlew assembleRelease && cd ..",
     "release:prod": "cd android && ENVFILE=.env ./gradlew assembleRelease && cd ..",
-    "test": "jest"
+    "test": "jest",
+    "build": "npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle",
+    "postbuild":"cd android && ./gradlew bundleRelease && ./gradlew assembleRelease && cd .. && echo 'done!'"
   },
   "dependencies": {
     "react": "18.2.0",
