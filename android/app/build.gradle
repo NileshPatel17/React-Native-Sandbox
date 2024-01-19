@@ -1,5 +1,15 @@
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
+apply from: "./utils.gradle"
+
+project.ext.envConfigFiles = [
+productiondebug: ".env",
+productionrelease: ".env",
+devrelease: ".env.dev",
+devdebug: ".env.dev",
+uatrelease: ".env.uat",
+uatdebug: ".env.uat"
+]
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 /**
@@ -75,12 +85,54 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     namespace "com.reactnativesandbox"
+
+    // https://stackoverflow.com/questions/21405457/autoincrement-versioncode-with-gradle-extra-properties
+    def _versionCode=0
+    def _major=0
+    def _minor=0
+    def _patch=0
+
+    def versionPropsFile = file('version.properties')
+
+    if (versionPropsFile.canRead()) {
+        def Properties versionProps = new Properties()
+
+        versionProps.load(new FileInputStream(versionPropsFile))
+
+        _patch = versionProps['PATCH'].toInteger() + 1
+        _major = versionProps['MAJOR'].toInteger()
+        _minor = versionProps['MINOR'].toInteger() 
+        _versionCode= versionProps['VERSION_CODE'].toInteger()+1
+        
+        if(_patch==100) {
+            _patch=0
+            _minor=_minor+1
+        }
+        if(_minor == 10){
+            _minor = 0
+            _major =_major + 1
+        }
+
+        versionProps['MAJOR']=_major.toString()
+        versionProps['MINOR']=_minor.toString()
+        versionProps['PATCH']=_patch.toString()
+        versionProps['VERSION_CODE']=_versionCode.toString()
+        // versionProps.store(versionPropsFile.newWriter(), null)
+    }
+    else {
+        // versionProps['VERSION_CODE']='0'
+        throw new GradleException("Could not read version.properties!")
+    }
+
+    def _versionName = "${_major}.${_minor}.${_patch}"
+
     defaultConfig {
-        applicationId "com.reactnativesandbox"
+        applicationId "com.rn_sandbox"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode _versionCode
+        versionName _versionName
+        setProperty("archivesBaseName", applicationId + "-" + getArtifactName(defaultConfig))
     }
     signingConfigs {
         debug {
@@ -100,6 +152,26 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+    }
+
+    // applicationVariants are e.g. debug, release
+    applicationVariants.all { variant ->
+        // variant.outputs.all {
+        //     outputFileName = "RN-Sandbox-${defaultConfig.versionName}-${variant.buildType.name}.apk"
+        // }
+        variant.outputs.each { output ->
+            // For each separate APK per architecture, set a unique version code as described here:
+            // https://developer.android.com/studio/build/configure-apk-splits.html
+            // Example: versionCode 1 will generate 1001 for armeabi-v7a, 1002 for x86, etc.
+            // def versionCodes = ["armeabi-v7a": 1, "x86": 2, "arm64-v8a": 3, "x86_64": 4]
+            // def abi = output.getFilter(OutputFile.ABI)
+            // if (abi != null) {  // null for the universal-debug, universal-release variants
+            //     output.versionCodeOverride =
+            //             defaultConfig.versionCode * 1000 + versionCodes.get(abi)
+            // }
+            
+
         }
     }
 }
